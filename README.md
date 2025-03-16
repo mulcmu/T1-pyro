@@ -1,3 +1,5 @@
+![./images/t1 πro.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/t1%20%CF%80ro.jpg)
+
 # T1 πro
 Work in progress to convert a FLSUN T1 Pro to T1 πro:
 
