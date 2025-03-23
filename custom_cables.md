@@ -34,4 +34,4 @@ Two red wires are the 5v and two black wires are the common
 
 Connections
 
-![./images/power cord.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/power%20cord.jpg)
+![./images/power cord.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/power%20cord.JPG)
