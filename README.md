@@ -25,7 +25,7 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 - [ ] Document upper core board MCU / PCB
 - [ ] Document lower core board
 - [ ] Document effector PCB and determine cable pinout
-- [ ] Document custom cables
+- [x] Document custom cables
 - [ ] Modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
 - [ ] Modification for filament <u>movement</u> sensor
 - [ ] Better camera (mine broke already)
@@ -47,13 +47,20 @@ https://www.printables.com/model/1191414-flsun-t1-pro-pi-and-screen-bracket
 
 Some assorted M2, M2.5 and M3 screws are needed for assembly
 
-### Custom Cables / Parts
+### Custom Cables
 
 * Custom cable from a Pi usb connector to the stock Usb hub board
 * Custom cable from the stock lower core board 5v to the Pi *GPIO*
-* USB Extension cable for MCU
-* Optional: Ethernet and bulkhead adapter
-* Industrial / rugged SD card
+* [Details](custom cables.md)
+
+### Parts
+
+* USB Extension cable for MCU ([Type A male to Type C female](https://www.amazon.com/dp/B07M999Y6T))
+* Optional for Ethernet 
+  * Low profile [connector cable](https://www.amazon.com/dp/B0D9JVSB2X?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_1) 
+  * [Bulkhead connector](https://www.amazon.com/dp/B0D9JVSB2X)
+* Industrial / rugged SD card for Pi
+* SD card for flashing upper core board firmware
 
 ### Installation
 
