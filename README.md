@@ -51,7 +51,7 @@ Some assorted M2, M2.5 and M3 screws are needed for assembly
 
 * Custom cable from a Pi usb connector to the stock Usb hub board
 * Custom cable from the stock lower core board 5v to the Pi *GPIO*
-* [Details](custom cables.md)
+* [Details](custom_cables.md)
 
 ### Parts
 
