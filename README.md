@@ -178,6 +178,7 @@ Details:
 
 * Enable host mcu
   * Setup hardware PWM using this guide https://www.klipper3d.org/RPi_microcontroller.html
+  * The case light gets connected to PWM0 with it routed it to gpio12.
 
 * Modify printer.cfg
   * Copy the printer.cfg from this repository and update with your existing calibration (endstops, bedmesh, PID, etc)
