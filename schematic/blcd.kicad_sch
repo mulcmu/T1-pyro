@@ -1,0 +1,11 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "ed3b2bfd-3864-4006-ba8b-a4813900d2e9")
+	(paper "A4")
+	(title_block
+		(company "https://github.com/mulcmu/t1-pyro")
+	)
+	(lib_symbols)
+)
