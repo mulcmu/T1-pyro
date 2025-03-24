@@ -2,7 +2,7 @@
 	(version 20231120)
 	(generator "eeschema")
 	(generator_version "8.0")
-	(uuid "de3996c7-0a88-456a-8ad8-dcd1481a423f")
+	(uuid "1318a680-e2e3-4e6d-90b0-70f695d4b919")
 	(paper "A4")
 	(title_block
 		(company "https://github.com/mulcmu/t1-pyro")

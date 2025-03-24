@@ -3,7 +3,7 @@
 # T1 πro
 Work in progress to convert a FLSUN T1 Pro to T1 πro:
 
-- Replace the stock host board with a Raspberry Pi
+- Replace the stock host board (Core Board) with a Raspberry Pi
 - Replace the stock screen with Fysetc Raspberry Pi 5 inch DSI Display
 - Document stock hardware connections for troubleshooting/upgrades
 - Reuse other stock hardware as much as practical
@@ -14,7 +14,7 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 ### Current Status
 
 * Pi 4 and the screen installed, fully operational
-* Uses the stock 5v power supply on lower core board
+* Uses the stock 5v power supply on lower adapter board
 * USB camera hub board reused by Pi
 * Macros need a lot of work
 * Help wanted, contributions welcomed
@@ -22,10 +22,10 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 ### TODO
 
 - [ ] Cleanup the printer.cfg file and macros
-- [ ] Document upper core board MCU / PCB
-- [ ] Document lower core board
+- [ ] Create Schematic (in progress)
+- [ ] Document lower adapter board
 - [ ] Document effector PCB and determine cable pinout
-- [x] Document custom cables
+- [x] Document πro custom cables
 - [ ] Modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
 - [ ] Modification for filament <u>movement</u> sensor
 - [ ] Better camera (mine broke already)
@@ -38,6 +38,7 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 - [ ] Standard preinstalled Pi image
 - [ ] Redesign the screen bracket
 - [ ] Find stock firmware for the MCU
+- [x] Stock firmware for the probe MCU
 
 ### STL Models
 
@@ -50,7 +51,7 @@ Some assorted M2, M2.5 and M3 screws are needed for assembly
 ### Custom Cables
 
 * Custom cable from a Pi usb connector to the stock Usb hub board
-* Custom cable from the stock lower core board 5v to the Pi *GPIO*
+* Custom cable from the stock lower adapter board 5v to the Pi *GPIO*
 * [Details](custom_cables.md)
 
 ### Parts
@@ -69,9 +70,9 @@ Current high level guide to implement:
 * Get Pi setup and Klipper installed and tested before physical install into machine
 * Print the brackets for printer installation
 * Make the custom cables
-* Remove stock host PCB and screen
+* Remove stock host PCB (Core board) and screen
 * Install Pi and 5" screen
-* Flash Klipper firmware to upper core board
+* Flash Klipper firmware to motherboard
 
 Details:
 
@@ -192,26 +193,26 @@ Details:
 
 * Install screen in cutom bracket
 
-* Remove the stock screen, host PCB, ribbon cable on lower core board, power cable from lower core board, cable from the usb hub
+* Remove the stock screen, host (core board) PCB, ribbon cable on lower adapter board, power cable from lower adapter board, cable from the usb hub
 
 * Install the PI, slide over existing standoffs, secure with M3 screws
 
-* Connect usb adapter extension from pi to the usb cable running to upper core board
+* Connect usb adapter extension from pi to the usb cable running to upper adapter board / motherboard
 
 * Connect custom usb hub cable to pi usb and gpio
 
 * (Optional) Connect ethernet cable and fit the bulkhead adapter somewhere.
 
-* Connect the custom power cable from lower core board to GPIO
+* Connect the custom power cable from lower adapter board to GPIO
 
 * Initial test, at this point pi and screen should boot when printer turned on.  Klipperscreen should load and show *MCU Protocol Error*.  The MCU firmware needs to be updated (or Klipper downgraded) to be be compatible
 
 > [!WARNING]
 >
 > After flashing the Klipper MCU firmware returning printer to original stock configuration is not possible!
-* Flash upper core board MCU
+* Flash motherboard MCU
   * Copy the ~/klipper/out/Robin_nano35.bin file to an empty fat32 formatted sd card
-  * With printer powered off, install the sd card in the upper core board
+  * With printer powered off, install the sd card in the motherboard
   * Power on printer and wait 30 seconds
   * Power off printer and remove the sd card
   * Robin_nano35.bin should be renamed to Robin_nano35.cur
