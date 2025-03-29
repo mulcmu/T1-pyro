@@ -1,7 +1,9 @@
 ![./images/t1 πro.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/t1%20%CF%80ro.jpg)
 
 # T1 πro
-Work in progress to convert a FLSUN T1 Pro to T1 πro:
+Document and share progress to convert a FLSUN T1 Pro to T1 πro.
+
+### Objectives
 
 - Replace the stock host board (Core Board) with a Raspberry Pi
 - Replace the stock screen with Fysetc Raspberry Pi 5 inch DSI Display
@@ -9,13 +11,17 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 - Reuse other stock hardware as much as practical
 - Clean installation
 - Up to date OS and Klipper [Ecosystem](https://klipper.discourse.group/t/klipper-architecture-ecosystem/6313)
-- Currently irreversible after flashing Klipper MCU hardware 
 
 ### Current Status
 
 * Pi 4 and the screen installed, fully operational
-* Uses the stock 5v power supply on lower adapter board
+* Uses the stock 5v power supply on lower adapter board for Pi
 * USB camera hub board reused by Pi
+* Currently <u>irreversible</u> after flashing Klipper MCU hardware 
+* [[load cell]](https://github.com/garethky/klipper/tree/load-cell-probe-community-testing) community testing branch working with stock lower function adapter board
+  * `before: range 0.046875, average -0.420110, stDev 0.010482, average delta: 0.011671`
+  * `  after: range 0.002557, average -0.304737, stDev 0.000692, average delta: 0.000532`
+
 * Macros need a lot of work
 * Help wanted, contributions welcomed
 
@@ -23,10 +29,13 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 
 - [ ] Cleanup the printer.cfg file and macros
 - [ ] Create Schematic (in progress)
-- [ ] Document lower adapter board
-- [ ] Document effector PCB and determine cable pinout
+- [x] Document lower adapter board
+- [x] Fix lower adapter board usart1 rx/tx
+- [x] Document effector PCB and determine cable pinout
 - [x] Document πro custom cables
-- [ ] Modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
+- [ ] Hotend thermistor noise at ambient temps
+- [ ] Document modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
+- [ ] Slay underbed dragons (potential regions were probe will not trigger as two load cells readings are exactly balanced out by 3rd load cell reading)
 - [ ] Modification for filament <u>movement</u> sensor
 - [ ] Better camera (mine broke already)
 - [ ] Chamber temperature, RH, sensor
@@ -35,9 +44,10 @@ Work in progress to convert a FLSUN T1 Pro to T1 πro:
 - [ ] Does Pi need heatsinks or extra cooling
 - [ ] Overlay file system or similar to make more robust to power loss
 - [ ] Installation guides
+- [ ] Logo
 - [ ] Standard preinstalled Pi image
 - [ ] Redesign the screen bracket
-- [ ] Find stock firmware for the MCU
+- [ ] Find stock firmware for the motherboard MCU
 - [x] Stock firmware for the probe MCU
 
 ### STL Models
@@ -62,6 +72,7 @@ Some assorted M2, M2.5 and M3 screws are needed for assembly
   * [Bulkhead connector](https://www.amazon.com/dp/B0D9JVSB2X)
 * Industrial / rugged SD card for Pi
 * SD card for flashing upper core board firmware
+* ST Link v2 clone or similar [SWD debugger](https://github.com/WeActStudio/WeActStudio.MiniDebugger) (Required for [load_cell], maybe needed for motherboard MCU)
 
 ### Installation
 
@@ -73,6 +84,7 @@ Current high level guide to implement:
 * Remove stock host PCB (Core board) and screen
 * Install Pi and 5" screen
 * Flash Klipper firmware to motherboard
+* Flash Klipper firmware to lower function board
 
 Details:
 
@@ -140,7 +152,33 @@ Details:
     ./kiauh/kiauh.sh
     ```
 
-* Build MCU firmware
+* Optional for [load_cell] support: switch to load-cell-probe-community-testing fork
+
+    ```	
+    cd ~/kiauh
+    nano klipper_repos.txt
+    ```
+
+​	add to this file and save:
+
+   ```
+   garethky/klipper,load-cell-probe-community-testing
+   ```
+
+​	switch klipper branch in kiauh to the load cell testing repository
+
+
+* Install extra python packages for Measuring Resonances and Load_Cell
+
+  ```
+  sudo apt install python3-numpy python3-matplotlib libatlas-base-dev libopenblas-dev python3-scipy
+  ~/klippy-env/bin/pip install -v "numpy<1.26"
+  ~/klippy-env/bin/pip install -v "scipy"
+  ```
+
+* Optional for [load_cell] support: Setup load cell [probe debug tool](https://observablehq.com/@garethky/klipper-load-cell-debugging-tool)
+
+* Build motherboard MCU firmware
 
   ```
   cd ~
@@ -151,17 +189,40 @@ Details:
   ./scripts/update_mks_robin.py out/klipper.bin out/Robin_nano35.bin
   ```
 
-  > [!NOTE]
-  >
-  > menuconfig settings:
-  >
-  > * Enable extra low-level configuration options
-  > * Micro-controller Arch (STM32)
-  > * Processor model (STM32F103)
-  > * Bootloader offset (28KiB Bootloader)
-  > * Clock Reference (8 MHz)
-  > * Communication interface (Serial (on USART3 PB11/PB10))
-  > * (250000) Baud for serial port
+> [!NOTE]
+>
+> Motherboard MCU menuconfig settings:
+>
+> * Enable extra low-level configuration options
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Bootloader offset (28KiB Bootloader)
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART3 PB11/PB10))
+> * (250000) Baud for serial port
+
+* Optional for load cell support: Build lower function adapter board MCU firmware
+
+  ```
+  cd ~
+  cd klipper
+  make menuconfig
+  make clean
+  make
+  cp out/klipper.bin out/load_cell.bin
+  ```
+
+> [!NOTE]
+>
+> Load Cell MCU menuconfig settings:
+>
+> * Enable extra low-level configuration options
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Bootloader offset (No Bootloader)
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART1 PA10/PA9))
+> * (250000) Baud for serial port
 
 * Wifi enabled (optional)
 
@@ -170,7 +231,12 @@ Details:
     ```
 
     * Setup wifi under System Options
-    * Select wifi country in Localisation Options
+    * Select wifi country in Localizations Options
+    * Enable serial uart, no console
+      * Interface options
+      * Serial Port
+      * No login shell
+      * Yes hardware enabled
     ```
     sudo nmtui
     ```
@@ -195,6 +261,12 @@ Details:
 
 * Remove the stock screen, host (core board) PCB, ribbon cable on lower adapter board, power cable from lower adapter board, cable from the usb hub
 
+* Optional for load cell support:
+
+    * Remove the J20 5 pin header pins and replace with right angle head pins on bottom of pcb.
+
+    * A magnet/enamel wire needs added to jumper Pin 30 on STM32F103 to Pin 32
+
 * Install the PI, slide over existing standoffs, secure with M3 screws
 
 * Connect usb adapter extension from pi to the usb cable running to upper adapter board / motherboard
@@ -205,7 +277,7 @@ Details:
 
 * Connect the custom power cable from lower adapter board to GPIO
 
-* Initial test, at this point pi and screen should boot when printer turned on.  Klipperscreen should load and show *MCU Protocol Error*.  The MCU firmware needs to be updated (or Klipper downgraded) to be be compatible
+* Initial test, at this point pi and screen should boot when printer turned on.  Klipperscreen should load and show *MCU Protocol Error*.  The MCU firmware needs to be updated (or potentially Klipper downgraded) to be be compatible.
 
 > [!WARNING]
 >
@@ -216,3 +288,9 @@ Details:
   * Power on printer and wait 30 seconds
   * Power off printer and remove the sd card
   * Robin_nano35.bin should be renamed to Robin_nano35.cur
+
+* Optional for [load_cell] support: Use ST-Link v2 programmer or similar to flash the load_cell.bin firmware to the STM32
+  * Configure [openocd](https://openocd.org/), [stlink tools](https://github.com/stlink-org/stlink), or similar for your programming adapter and OS
+  * Connect STLINK v2 adapter to JTAG port on lower function adapter board
+  * Save a copy of the existing firmware `st-flash read out.bin 0x0800000 0x20000`
+  * Write the load_cell.bin file to the MCU `st-flash write load_cell.bin 0x08000000`

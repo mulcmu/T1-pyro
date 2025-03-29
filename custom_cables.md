@@ -18,7 +18,7 @@ Connections
 
 ![./images/usb cord.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/usb%20cord.jpg)
 
-The brown wire goes off to the GPIO dupont connector.
+The brown wire goes off to the GPIO Dupont connector.
 
 Use some heat shrink tubing to clean up/protect the usb pcb
 
@@ -35,3 +35,7 @@ Two red wires are the 5v and two black wires are the common.
 Connections
 
 ![./images/power cord.jpg](https://raw.githubusercontent.com/mulcmu/T1-pyro/refs/heads/main/images/power%20cord.JPG)
+
+Optional for [load cell] support:
+
+Two wires need run from the PI GPIO RX/TX to the modified lower function adapter board.  These wires terminate in a separate 5 pin Dupont housing.
