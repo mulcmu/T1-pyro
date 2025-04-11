@@ -25,15 +25,27 @@ Document and share progress to convert a FLSUN T1 Pro to T1 πro.
 * Macros need a lot of work
 * Help wanted, contributions welcomed
 
+### Gen1/Gen2
+
+My original T1 Pro was a Gen2, second T1 Pro purchased opened box was Gen1.  The Gen1 has older revision PCBs.  The Gen1 motherboard came with BTT stepper drivers vs FLSUN brand on Gen2.  BTT silk screen painted over in green even though the spare part on the website showed it.  The Gen2 motherboard has some changes from the Gen1, Gen1 lacks the 5 pin firmware download header and a bunch of transistors under the steppers.  Gen1 has  some pin header jumpers under the steppers that are not on Gen2.  
+
+The lower function adapter board on Gen1 has the low noise ADC chip bodged onto the back of the PCB and held with copious amounts of the white silastic.
+
+The Gen2 CPAP fan aligned with the air hole opening in the top cover.  The Gen1 did not and sucked air in from inside the enclosure.
+
+Gen1 also looks to have an older effector pcb, haven't taken that apart yet to document.
+
 ### TODO
 
 - [ ] Cleanup the printer.cfg file and macros
 - [ ] Create Schematic (in progress)
+- [ ] Trace motor SPI connections
 - [x] Document lower adapter board
 - [x] Fix lower adapter board usart1 rx/tx
 - [x] Document effector PCB and determine cable pinout
 - [x] Document πro custom cables
 - [ ] Hotend thermistor noise at ambient temps
+- [ ] Make a scripts for mcu fw compile and katapult deploy
 - [ ] Document modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
 - [ ] Slay underbed dragons (potential regions were probe will not trigger as two load cells readings are exactly balanced out by 3rd load cell reading)
 - [ ] Modification for filament <u>movement</u> sensor
@@ -56,8 +68,6 @@ Fusion360 models and STL located on pintables:
 
 https://www.printables.com/model/1191414-flsun-t1-pro-pi-and-screen-bracket
 
-Some assorted M2, M2.5 and M3 screws are needed for assembly
-
 ### Custom Cables
 
 * Custom cable from a Pi usb connector to the stock Usb hub board
@@ -72,7 +82,9 @@ Some assorted M2, M2.5 and M3 screws are needed for assembly
   * [Bulkhead connector](https://www.amazon.com/dp/B0D9JVSB2X)
 * Industrial / rugged SD card for Pi
 * SD card for flashing upper core board firmware
-* ST Link v2 clone or similar [SWD debugger](https://github.com/WeActStudio/WeActStudio.MiniDebugger) (Required for [load_cell], maybe needed for motherboard MCU)
+* ST Link v2 clone or similar [SWD debugger](https://github.com/WeActStudio/WeActStudio.MiniDebugger) (Required for [load_cell], recommended for katapult install on motherboard MCU)
+* Some assorted M2, M2.5 and M3 screws are needed for assembly
+
 
 ### Installation
 
@@ -84,34 +96,59 @@ Current high level guide to implement:
 * Remove stock host PCB (Core board) and screen
 * Install Pi and 5" screen
 * Flash Klipper firmware to motherboard
-* Flash Klipper firmware to lower function board
+* [Optional for load cell] Flash Klipper firmware to lower function board
 
 Details:
 
-* Fresh Bookworm Install:  Use Raspberry Pi Imager software to install latest Bookwork Lite Os to SD card
+* Fresh Bookworm Install:  Use Raspberry Pi Imager software to install Raspberry Pi OS Lite (64-bit)  to the SD card
+    Current release is 2024-11-19
+
+* Edit settings to set desired host name, password, and wifi configuration
 
 * Modify the Pi config.txt
 
     ```
-    #Enable i2c for future use
+    # Uncomment some or all of these to enable the optional hardware interfaces
     dtparam=i2c_arm=on
+    #dtparam=i2s=on
+    #dtparam=spi=on
     
-    # Enable pwmchip sysfs interface for hardware PWM on the GPIO pins
+    # Enable audio (loads snd_bcm2835)
+    dtparam=audio=on
+    
+    # Enable pwmchip sysfs interface
     dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
     
-    #Not likely to use cable to Pi camera interface
+    # Automatically load overlays for detected cameras
     camera_auto_detect=0
     
-    #Screen changes
+    # Automatically load overlays for detected DSI displays
+    display_auto_detect=1
     
-    # Enable DRM VC4 V3D driver
-    # dtoverlay=vc4-kms-v3d
-    # max_framebuffers=2
+    # Automatically load initramfs files, if found
+    auto_initramfs=1
     
+    # Don't have the firmware create an initial video= setting in cmdline.txt.
+    # Use the kernel's default instead.
     disable_fw_kms_setup=1
     
-    #Disable compensation for displays with overscan
+    # Run in 64-bit mode
+    arm_64bit=1
+    
+    # Disable compensation for displays with overscan
     disable_overscan=1
+    
+    # Run as fast as firmware / board allows
+    arm_boost=1
+    
+    [cm4]
+    otg_mode=1
+    
+    [cm5]
+    dtoverlay=dwc2,dr_mode=host
+    
+    [all]
+    enable_uart=1
     ```
 
 > [!NOTE]
@@ -129,6 +166,7 @@ Details:
   ``` 
   sudo apt update
   sudo apt upgrade
+  sudo systemctl disable systemd-networkd-wait-online.service
   sync
   sudo reboot now
   ```
@@ -155,14 +193,19 @@ Details:
 * Optional for [load_cell] support: switch to load-cell-probe-community-testing fork
 
     ```	
+    echo "For KIAUH v5"
     cd ~/kiauh
     nano klipper_repos.txt
+    
+    echo "For KIAUH v6"
+    cp default.kiauh.cfg kiauh.cfg
+    nano kiauh.cfg
     ```
 
-​	add to this file and save:
+​	add this to file and save:
 
    ```
-   garethky/klipper,load-cell-probe-community-testing
+   https://garethky/klipper,load-cell-probe-community-testing
    ```
 
 ​	switch klipper branch in kiauh to the load cell testing repository
@@ -171,60 +214,33 @@ Details:
 * Install extra python packages for Measuring Resonances and Load_Cell
 
   ```
-  sudo apt install python3-numpy python3-matplotlib libatlas-base-dev libopenblas-dev python3-scipy
+  sudo apt install python3-numpy python3-matplotlib libatlas-base-dev libopenblas-dev python3-scipy python3-serial
   ~/klippy-env/bin/pip install -v "numpy<1.26"
   ~/klippy-env/bin/pip install -v "scipy"
   ```
 
 * Optional for [load_cell] support: Setup load cell [probe debug tool](https://observablehq.com/@garethky/klipper-load-cell-debugging-tool)
 
-* Build motherboard MCU firmware
+* Install ST-Link
 
   ```
-  cd ~
-  cd klipper
-  make menuconfig
-  make clean
-  make
-  ./scripts/update_mks_robin.py out/klipper.bin out/Robin_nano35.bin
+  sudo apt install gcc build-essential cmake libusb-1.0-0 libusb-1.0-0-dev libgtk-3-dev pandoc -y
+  cd ~ 
+  git clone https://github.com/stlink-org/stlink.git
+  cd stlink
+  make clean && make release
+  sudo make install
+  sudo ldconfig
   ```
 
-> [!NOTE]
->
-> Motherboard MCU menuconfig settings:
->
-> * Enable extra low-level configuration options
-> * Micro-controller Arch (STM32)
-> * Processor model (STM32F103)
-> * Bootloader offset (28KiB Bootloader)
-> * Clock Reference (8 MHz)
-> * Communication interface (Serial (on USART3 PB11/PB10))
-> * (250000) Baud for serial port
+* Install katapult
 
-* Optional for load cell support: Build lower function adapter board MCU firmware
+    ```
+    cd ~
+    git clone https://github.com/Arksine/katapult
+    ```
 
-  ```
-  cd ~
-  cd klipper
-  make menuconfig
-  make clean
-  make
-  cp out/klipper.bin out/load_cell.bin
-  ```
-
-> [!NOTE]
->
-> Load Cell MCU menuconfig settings:
->
-> * Enable extra low-level configuration options
-> * Micro-controller Arch (STM32)
-> * Processor model (STM32F103)
-> * Bootloader offset (No Bootloader)
-> * Clock Reference (8 MHz)
-> * Communication interface (Serial (on USART1 PA10/PA9))
-> * (250000) Baud for serial port
-
-* Wifi enabled (optional)
+* No login shell (required for load_cell) and Wifi enabled (optional)
 
     ``` 
     sudo raspi-config
@@ -245,29 +261,150 @@ Details:
 
 * Enable host mcu
   * Setup hardware PWM using this guide https://www.klipper3d.org/RPi_microcontroller.html
+  
   * The case light gets connected to PWM0 with it routed it to gpio12.
-
+  
+  * /etc/rc.local will need to be created, don't forget the #! and chmod +x
+  
+    ```
+    #!/bin/sh -e
+    
+    # Enable pwmchip sysfs interface
+    echo 0 > /sys/class/pwm/pwmchip0/export
+    echo 1 > /sys/class/pwm/pwmchip0/export
+    
+    exit 0
+    ```
+  
+    
+  
 * Modify printer.cfg
   * Copy the printer.cfg from this repository and update with your existing calibration (endstops, bedmesh, PID, etc)
   * or.. edit your printer.cfg to remove all the FLSUN additions
+
+* Build motherboard MCU firmware
+
+    ```
+    sudo service klipper stop
+    cd ~
+    cd klipper
+    make menuconfig
+    make clean
+    make
+    cp out/klipper.elf ~/motherboard.elf
+    cp out/klipper.bin ~/motherboard.bin
+    ./scripts/update_mks_robin.py out/klipper.bin ~/Robin_nano35.bin
+    sudo service klipper start
+    ```
+
+> [!NOTE]
+>
+> Motherboard MCU menuconfig settings:
+>
+> * Enable extra low-level configuration options
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Bootloader offset (28KiB Bootloader) for SD card flash
+> * Bootloader offset (8KiB bootloader) for Katapult
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART3 PB11/PB10))
+> * (250000) Baud for serial port
+> * Enable step on both edges
+
+> [!NOTE]
+>
+> The Robin_nano35.bin is only for using on SD card with motherboard stock bootloader.
+
+* Optional for load cell support: Build lower function adapter board MCU firmware
+
+  ```
+  sudo service klipper stop
+  cd ~
+  cd klipper
+  make menuconfig
+  make clean
+  make
+  cp out/klipper.elf ~/load_cell.elf
+  cp out/klipper.bin ~/load_cell.bin
+  sudo service klipper start
+  ```
+
+> [!NOTE]
+>
+> Load Cell MCU menuconfig settings:
+>
+> * Enable extra low-level configuration options
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Bootloader offset (8KiB Bootloader)
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART1 PA10/PA9))
+> * (250000) Baud for serial port
+
+* Build Katapul bootloaders
+
+```
+sudo service klipper stop
+cd ~
+cd katapult
+make menuconfig
+make clean
+make
+cp out/katapult.elf ~/mb_katapult.elf
+cp out/katapult.bin ~/mb_katapult.bin
+sudo service klipper start
+```
+
+> [!NOTE]
+>
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Deployment app (Do not build)
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART3 PB11/PB10))
+> * Application start offset (8KiB bootloader)
+> * (250000) Baud for serial port
+> * (!PD12) Status LED:  Optional will turn on led by SD card but will direct short if SD card is inserted.
+
+```
+sudo service klipper stop
+cd ~
+cd katapult
+make menuconfig
+make clean
+make
+cp out/katapult.elf ~/lc_katapult.elf
+cp out/katapult.bin ~/lc_katapult.bin
+sudo service klipper start
+```
+
+> [!NOTE]
+>
+> * Micro-controller Arch (STM32)
+> * Processor model (STM32F103)
+> * Deployment app (Do not build)
+> * Clock Reference (8 MHz)
+> * Communication interface (Serial (on USART1 PA10/PA9))
+> * Application start offset (8KiB bootloader)
+> * (250000) Baud for serial port
 
 * Make custom cables
 
 * Print custom brackets
 
-* Install pi in custom bracket
+* Install pi in custom bracket (four M2.5x6 screws)
 
-* Install screen in cutom bracket
+* Install screen in custom bracket
 
 * Remove the stock screen, host (core board) PCB, ribbon cable on lower adapter board, power cable from lower adapter board, cable from the usb hub
 
 * Optional for load cell support:
 
-    * Remove the J20 5 pin header pins and replace with right angle head pins on bottom of pcb.
+    * Remove the J20 5 pin header pins and replace with right angle head pins on bottom of pcb if room
 
     * A magnet/enamel wire needs added to jumper Pin 30 on STM32F103 to Pin 32
 
-* Install the PI, slide over existing standoffs, secure with M3 screws
+* Install the PI, slide over existing standoffs, secure with two M3x6 screws
 
 * Connect usb adapter extension from pi to the usb cable running to upper adapter board / motherboard
 
@@ -294,3 +431,30 @@ Details:
   * Connect STLINK v2 adapter to JTAG port on lower function adapter board
   * Save a copy of the existing firmware `st-flash read out.bin 0x0800000 0x20000`
   * Write the load_cell.bin file to the MCU `st-flash write load_cell.bin 0x08000000`
+
+### TODO: katapult stuff
+
+```
+
+sudo service klipper stop
+python3 ~/katapult/scripts/flashtool.py --request-bootloader -d /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+python3 ~/katapult/scripts/flashtool.py -d /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0 -f ~/motherboard.bin
+sudo service klipper start
+
+sudo service klipper stop
+python3 ~/katapult/scripts/flashtool.py --request-bootloader -d /dev/ttyS0
+python3 ~/katapult/scripts/flashtool.py -d /dev/ttyS0 -f ~/load_cell.bin
+sudo service klipper start
+
+
+st-flash erase
+st-flash write mb_katapult.bin 0x08000000
+st-flash write motherboard.bin 0x08002000
+
+
+st-flash erase
+st-flash write lc_katapult.bin 0x08000000
+st-flash write load_cell.bin 0x08002000
+
+```
+

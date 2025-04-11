@@ -34864,7 +34864,7 @@
 		)
 		(uuid "20edcd45-8a79-4d99-a0fd-5ab5e369ab19")
 	)
-	(text "U5 Voltage \nSuppervisor\n"
+	(text "U5 Voltage \nSuppervisor\nnot on v2.5"
 		(exclude_from_sim no)
 		(at 88.9 110.744 0)
 		(effects
@@ -34894,6 +34894,16 @@
 		)
 		(uuid "38f4858a-3c9d-4f03-ac56-26bb4994a346")
 	)
+	(text "v2.5 has 3v3\nnot BOOT0"
+		(exclude_from_sim no)
+		(at 197.612 128.27 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "48c37b3a-29c8-4399-9767-7050790cf37b")
+	)
 	(text "MOS Bed\nHeater\nPower"
 		(exclude_from_sim no)
 		(at 135.89 35.56 0)
@@ -34903,6 +34913,16 @@
 			)
 		)
 		(uuid "892a7f12-2565-4489-8872-374105669eb4")
+	)
+	(text "No led on v2.5"
+		(exclude_from_sim no)
+		(at 81.28 178.562 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "af060754-43cc-451e-ae52-7918059cf2be")
 	)
 	(text "Strain Gauges\nIn Parallel"
 		(exclude_from_sim no)
@@ -34934,7 +34954,7 @@
 		)
 		(uuid "da53c7ec-7ad5-4128-a00d-38df676a38fb")
 	)
-	(text "1117 3v3 regulator for digital 3v3\nu6 is low drop out regulator low noise for HY717 Analog AVDD\n"
+	(text "1117 3v3 regulator for digital 3v3\nu6 is low drop out regulator low noise for HY717 Analog AVDD\nOn v2.5 this is bodged onto the back of PCB\n"
 		(exclude_from_sim no)
 		(at 120.142 74.676 0)
 		(effects
