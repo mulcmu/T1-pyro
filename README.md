@@ -25,15 +25,22 @@ Document and share progress to convert a FLSUN T1 Pro to T1 πro.
 * Macros need a lot of work
 * Help wanted, contributions welcomed
 
-### Gen1/Gen2
+### Gen1/Gen2 Stock Hardware
 
-My original T1 Pro was a Gen2, second T1 Pro purchased opened box was Gen1.  The Gen1 has older revision PCBs.  The Gen1 motherboard came with BTT stepper drivers vs FLSUN brand on Gen2.  BTT silk screen painted over in green even though the spare part on the website showed it.  The Gen2 motherboard has some changes from the Gen1, Gen1 lacks the 5 pin firmware download header and a bunch of transistors under the steppers.  Gen1 has  some pin header jumpers under the steppers that are not on Gen2.  
+My original T1 Pro was a Gen2, second T1 Pro purchased opened box was Gen1.  The Gen1 has older revision PCBs.  The Gen1 motherboard came with BTT stepper drivers vs FLSUN brand on Gen2.  BTT silk screen painted over in green even though the spare part clearly displayed the BTT marking on the website.  The Gen2 motherboard has some changes from the Gen1, Gen1 lacks the 5 pin firmware download header and a bunch of transistors under the steppers.  Gen1 has  some pin header jumpers under the steppers that are not on Gen2.  
 
 The lower function adapter board on Gen1 has the low noise ADC chip bodged onto the back of the PCB and held with copious amounts of the white silastic.
 
 The Gen2 CPAP fan aligned with the air hole opening in the top cover.  The Gen1 did not and sucked air in from inside the enclosure.
 
 Gen1 also looks to have an older effector pcb, haven't taken that apart yet to document.
+
+### Differences
+
+* Fully open source Klipper ecosystem
+* No power loss protection
+* Ethernet connection possible, not just wifi
+* Slightly bigger screen with more control
 
 ### TODO
 
@@ -46,6 +53,7 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 - [x] Document πro custom cables
 - [ ] Hotend thermistor noise at ambient temps
 - [ ] Make a scripts for mcu fw compile and katapult deploy
+- [ ] moonraker [timelapse](https://github.com/mainsail-crew/moonraker-timelapse/blob/main/docs/installation.md)
 - [ ] Document modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
 - [ ] Slay underbed dragons (potential regions were probe will not trigger as two load cells readings are exactly balanced out by 3rd load cell reading)
 - [ ] Modification for filament <u>movement</u> sensor
@@ -364,7 +372,7 @@ sudo service klipper start
 > * Communication interface (Serial (on USART3 PB11/PB10))
 > * Application start offset (8KiB bootloader)
 > * (250000) Baud for serial port
-> * (!PD12) Status LED:  Optional will turn on led by SD card but will direct short if SD card is inserted.
+> * (!PD12) Status LED:  Optional will turn on led by SD card but will direct short if an SD card is inserted!!!
 
 ```
 sudo service klipper stop
