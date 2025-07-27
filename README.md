@@ -41,6 +41,7 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 * No power loss protection
 * Ethernet connection possible, not just wifi
 * Slightly bigger screen with more control
+* Potential for Load cell probe accuracy improvements
 
 ### TODO
 
@@ -104,12 +105,12 @@ Current high level guide to implement:
 * Remove stock host PCB (Core board) and screen
 * Install Pi and 5" screen
 * Flash Klipper firmware to motherboard
-* [Optional for load cell] Flash Klipper firmware to lower function board
+* [Optional for load cell] Modify lower function board with jumper and flash Klipper firmware to lower function board
 
 Details:
 
 * Fresh Bookworm Install:  Use Raspberry Pi Imager software to install Raspberry Pi OS Lite (64-bit)  to the SD card
-    Current release is 2024-11-19
+    Current release is 2025-05-13.  Tested with 2024-11-19.
 
 * Edit settings to set desired host name, password, and wifi configuration
 
@@ -189,7 +190,7 @@ Details:
   sudo reboot now
   ```
 
-* Install Git, KIAUH, Klipper, moonraker, mainsail, and klipperscreen
+* Install Git, KIAUH, Klipper, moonraker, mainsail, klipperscreen, crowsnest, klipper-backup, 
 
     ```
     sudo apt-get install git
@@ -213,7 +214,7 @@ Details:
 ​	add this to file and save:
 
    ```
-   https://garethky/klipper,load-cell-probe-community-testing
+   https://github.com/garethky/klipper,load-cell-probe-community-testing
    ```
 
 ​	switch klipper branch in kiauh to the load cell testing repository
@@ -247,6 +248,29 @@ Details:
     cd ~
     git clone https://github.com/Arksine/katapult
     ```
+
+* Install timelapse
+
+    ```
+    cd ~/
+    git clone https://github.com/mainsail-crew/moonraker-timelapse.git
+    cd ~/moonraker-timelapse
+    make install
+    
+    ```
+
+    ```
+    # moonraker.conf
+    
+    [update_manager timelapse]
+    type: git_repo
+    primary_branch: main
+    path: ~/moonraker-timelapse
+    origin: https://github.com/mainsail-crew/moonraker-timelapse.git
+    managed_services: klipper moonraker
+    ```
+
+    
 
 * No login shell (required for load_cell) and Wifi enabled (optional)
 
@@ -296,12 +320,14 @@ Details:
     sudo service klipper stop
     cd ~
     cd klipper
-    make menuconfig
     make clean
+    cp ~/motherboard.menu.config .config
+    make menuconfig
     make
     cp out/klipper.elf ~/motherboard.elf
     cp out/klipper.bin ~/motherboard.bin
     ./scripts/update_mks_robin.py out/klipper.bin ~/Robin_nano35.bin
+    cp .config ~/motherboard.menu.config
     sudo service klipper start
     ```
 
@@ -318,6 +344,7 @@ Details:
 > * Communication interface (Serial (on USART3 PB11/PB10))
 > * (250000) Baud for serial port
 > * Enable step on both edges
+> * PE8 (pins at startup for heatsink cooling fan until klipper boots)
 
 > [!NOTE]
 >
@@ -329,11 +356,13 @@ Details:
   sudo service klipper stop
   cd ~
   cd klipper
-  make menuconfig
   make clean
+  cp ~/load_cell.menu.config .config
+  make menuconfig
   make
   cp out/klipper.elf ~/load_cell.elf
   cp out/klipper.bin ~/load_cell.bin
+  cp .config  ~/load_cell.menu.config
   sudo service klipper start
   ```
 
@@ -342,12 +371,20 @@ Details:
 > Load Cell MCU menuconfig settings:
 >
 > * Enable extra low-level configuration options
+>
 > * Micro-controller Arch (STM32)
+>
 > * Processor model (STM32F103)
+>
 > * Bootloader offset (8KiB Bootloader)
+>
 > * Clock Reference (8 MHz)
+>
 > * Communication interface (Serial (on USART1 PA10/PA9))
+>
 > * (250000) Baud for serial port
+>
+>   
 
 * Build Katapul bootloaders
 

@@ -1,13 +1,47 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "2b543275-a81d-4202-9751-3707f6e39bad")
 	(paper "A4")
 	(title_block
 		(company "https://github.com/mulcmu/t1-pyro")
 	)
 	(lib_symbols)
+	(text "Commercial Brushless DC motor driver\n"
+		(exclude_from_sim no)
+		(at 160.274 105.156 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+		)
+		(uuid "64fe5b9e-af3f-4497-87b2-7ea34a8c757e")
+	)
+	(text "One IC is different on this one\n"
+		(exclude_from_sim no)
+		(at 53.34 99.568 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7834ccf4-e537-48c2-87c3-32a68396980c")
+	)
+	(text "Red and Black +24v & gnd\nYellow is pwm signal 60% max duty cycle\nNo feedback sensors\nJumper by pot removed for PWM control\n\nNewer similar version with two caps and a push button"
+		(exclude_from_sim no)
+		(at 141.478 111.76 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b2353657-f74d-4629-b918-95a7402955c2")
+	)
 	(image
 		(at 66.04 68.58)
 		(scale 0.487442)
@@ -10284,39 +10318,5 @@
 			"3NZWKUCgC3NqMsoxgD6VVbLHJPXrQT2pM0AGBRRSigAo4paQ0AGaKBiloAUVMlQjrUqHBzQBIRzR"
 			"RnJpM0CP/9k="
 		)
-	)
-	(text "Commercial Brushless DC motor driver\n"
-		(exclude_from_sim no)
-		(at 160.274 105.156 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-				(bold yes)
-			)
-		)
-		(uuid "64fe5b9e-af3f-4497-87b2-7ea34a8c757e")
-	)
-	(text "One IC is different on this one\n"
-		(exclude_from_sim no)
-		(at 53.34 99.568 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "7834ccf4-e537-48c2-87c3-32a68396980c")
-	)
-	(text "Red and Black +24v & gnd\nYellow is pwm signal 60% max duty cycle\nNo feedback sensors\nJumper by pot removed for PWM control\n\nNewer similar version with two caps and a push button"
-		(exclude_from_sim no)
-		(at 141.478 111.76 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "b2353657-f74d-4629-b918-95a7402955c2")
 	)
 )

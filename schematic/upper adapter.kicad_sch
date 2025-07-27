@@ -1,13 +1,23 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "ec90a78a-13a6-45ee-bc65-49b94c700a15")
 	(paper "A4")
 	(title_block
 		(company "https://github.com/mulcmu/t1-pyro")
 	)
 	(lib_symbols)
+	(text "Fancy right angle adapter..."
+		(exclude_from_sim no)
+		(at 133.858 131.826 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "f8b78293-2301-4c09-8cf1-95afdac33618")
+	)
 	(image
 		(at 137.16 91.44)
 		(scale 0.180883)
@@ -22650,15 +22660,5 @@
 			"EQWoIUryc9VbqKeI1EhdAc+w7VPqUMNrqUcUO7ZIm75+1MWMyQM4OMnGB2ouNC71X/rovbHy4qRI"
 			"EZc+ZIpPZelRRxFwiK21uck98VZjHmJlRtA4wTSuM//Z"
 		)
-	)
-	(text "Fancy right angle adapter..."
-		(exclude_from_sim no)
-		(at 133.858 131.826 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "f8b78293-2301-4c09-8cf1-95afdac33618")
 	)
 )
