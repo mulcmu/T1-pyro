@@ -501,5 +501,11 @@ st-flash erase
 st-flash write lc_katapult.bin 0x08000000
 st-flash write load_cell.bin 0x08002000
 
+host MCU update
+sudo service klipper stop
+make flash
+sudo service klipper start
+
+
 ```
 
