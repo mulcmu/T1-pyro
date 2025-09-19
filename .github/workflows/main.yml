@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run KiCad actions
         uses: actions-for-kicad/kicad-actions@v1-k9.0
@@ -34,7 +36,19 @@ jobs:
           gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=schematic_compressed.pdf schematic.pdf
           mv schematic_compressed.pdf schematic.pdf
 
-      - name: Upload schematic
+      - name: Copy PDF to root folder
+        run: |
+          cp schematic.pdf ./schematic.pdf
+
+      - name: Commit and push PDF to repository
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add schematic.pdf
+          git diff --staged --quiet || git commit -m "Auto-update schematic PDF [skip ci]"
+          git push
+
+      - name: Upload schematic artifact
         uses: actions/upload-artifact@v4
         with:
           name: Schematic
