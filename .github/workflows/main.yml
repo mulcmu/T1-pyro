@@ -9,6 +9,7 @@ on:
     branches: [ main, master ]
     paths:
       - 'schematic/**'
+  workflow_dispatch:
 
 jobs:
   generate-schematic:
@@ -24,6 +25,7 @@ jobs:
           schematic_file_name: ./schematic/schematic.kicad_sch
           run_erc: false
           schematic_output_pdf: true
+          schematic_output_black_white: true
 
       - name: Upload schematic
         uses: actions/upload-artifact@v4
