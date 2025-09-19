@@ -29,7 +29,7 @@ jobs:
           schematic_file_name: ./schematic/schematic.kicad_sch
           run_erc: false
           schematic_output_pdf: true
-          schematic_output_black_white: true
+          schematic_output_black_white: false
 
       - name: Compress PDF
         run: |
