@@ -27,6 +27,13 @@ jobs:
           schematic_output_pdf: true
           schematic_output_black_white: true
 
+      - name: Compress PDF
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript
+          gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=schematic_compressed.pdf schematic.pdf
+          mv schematic_compressed.pdf schematic.pdf
+
       - name: Upload schematic
         uses: actions/upload-artifact@v4
         with:
