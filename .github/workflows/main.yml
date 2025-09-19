@@ -1,20 +1,16 @@
-    name: Generate KiCad Outputs
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v4
 
-    on:
-      push:
-        branches:
-          - main # Trigger on pushes to the main branch
+  - name: Run KiCad actions
+    uses: actions-for-kicad/kicad-actions@v1-k9.0
+    with:
+      schematic_file_name: ./schematic/schematic.kicad_sch
+      run_erc: false
+      schematic_output_pdf: true
 
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
-
-          - name: Generate KiCad outputs
-            uses: obra/kicad-exports@v1 # Use the kicad-exports action
-            with:
-              project-path: './schematic' # Path to your KiCad project
-              output-path: './' # Directory to save generated files
-              outputs: 'schematic_pdf'
+  - name: Upload schematic
+    uses: actions/upload-artifact@v4
+    with:
+      name: Schematic
+      path: ./schematic.pdf
