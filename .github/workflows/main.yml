@@ -3,8 +3,12 @@ name: Generate KiCad Schematic PDF
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'schematic/**'
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'schematic/**'
 
 jobs:
   generate-schematic:
