@@ -36,10 +36,6 @@ jobs:
           gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=schematic_compressed.pdf schematic.pdf
           mv schematic_compressed.pdf schematic.pdf
 
-      - name: Copy PDF to root folder
-        run: |
-          cp schematic.pdf ./schematic.pdf
-
       - name: Commit and push PDF to repository
         run: |
           git config --local user.email "action@github.com"
