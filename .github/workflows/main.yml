@@ -1,16 +1,28 @@
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+name: Generate KiCad Schematic PDF
 
-  - name: Run KiCad actions
-    uses: actions-for-kicad/kicad-actions@v1-k9.0
-    with:
-      schematic_file_name: ./schematic/schematic.kicad_sch
-      run_erc: false
-      schematic_output_pdf: true
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
-  - name: Upload schematic
-    uses: actions/upload-artifact@v4
-    with:
-      name: Schematic
-      path: ./schematic.pdf
+jobs:
+  generate-schematic:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run KiCad actions
+        uses: actions-for-kicad/kicad-actions@v1-k9.0
+        with:
+          schematic_file_name: ./schematic/schematic.kicad_sch
+          run_erc: false
+          schematic_output_pdf: true
+
+      - name: Upload schematic
+        uses: actions/upload-artifact@v4
+        with:
+          name: Schematic
+          path: ./schematic.pdf
