@@ -76,10 +76,10 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 
 Fusion360 models and STL located on pintables:
 
-https://www.printables.com/model/1191414-flsun-t1-pro-pi-and-screen-bracket
-https://www.printables.com/model/1282464-flsun-t1-alternate-camera
-https://www.printables.com/model/1401304-flsun-t1-vent-hole-drill-guide
-https://www.printables.com/model/1282464-flsun-t1-alternate-camera
+* https://www.printables.com/model/1191414-flsun-t1-pro-pi-and-screen-bracket
+* https://www.printables.com/model/1282464-flsun-t1-alternate-camera
+* https://www.printables.com/model/1401304-flsun-t1-vent-hole-drill-guide
+* https://www.printables.com/model/1282464-flsun-t1-alternate-camera
 
 
 ### Custom Cables
