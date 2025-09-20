@@ -47,22 +47,23 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 
 - [ ] Cleanup the printer.cfg file and macros
 - [ ] Create Schematic (in progress)
-- [ ] Trace motor SPI connections
+- [X] Trace motor SPI connections
 - [x] Document lower adapter board
 - [x] Fix lower adapter board usart1 rx/tx
 - [x] Document effector PCB and determine cable pinout
 - [x] Document πro custom cables
 - [ ] Hotend thermistor noise at ambient temps
+- [ ] Cleanup katapult installation
 - [ ] Make a scripts for mcu fw compile and katapult deploy
-- [ ] moonraker [timelapse](https://github.com/mainsail-crew/moonraker-timelapse/blob/main/docs/installation.md)
+- [X] moonraker [timelapse](https://github.com/mainsail-crew/moonraker-timelapse/blob/main/docs/installation.md)
 - [ ] Document modifications to improve bed probe [performance](https://klipper.discourse.group/t/load-cell-probing-algorithm-testing/9751/102)
 - [ ] Slay underbed dragons (potential regions were probe will not trigger as two load cells readings are exactly balanced out by 3rd load cell reading)
-- [ ] Modification for filament <u>movement</u> sensor
-- [ ] Better camera (mine broke already)
+- [X] Modification for filament <u>movement</u> sensor
+- [X] Better camera (mine broke already)
 - [ ] Chamber temperature, RH, sensor
 - [ ] Chamber heater support
 - [ ] Improve boot speed of Pi
-- [ ] Does Pi need heatsinks or extra cooling
+- [X] Does Pi need heatsinks or extra cooling - YES
 - [ ] Overlay file system or similar to make more robust to power loss
 - [ ] Installation guides
 - [ ] Logo
@@ -76,6 +77,10 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 Fusion360 models and STL located on pintables:
 
 https://www.printables.com/model/1191414-flsun-t1-pro-pi-and-screen-bracket
+https://www.printables.com/model/1282464-flsun-t1-alternate-camera
+https://www.printables.com/model/1401304-flsun-t1-vent-hole-drill-guide
+https://www.printables.com/model/1282464-flsun-t1-alternate-camera
+
 
 ### Custom Cables
 
