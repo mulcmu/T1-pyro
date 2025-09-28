@@ -52,7 +52,7 @@ Gen1 also looks to have an older effector pcb, haven't taken that apart yet to d
 - [x] Fix lower adapter board usart1 rx/tx
 - [x] Document effector PCB and determine cable pinout
 - [x] Document πro custom cables
-- [ ] Hotend thermistor noise at ambient temps
+- [X] Hotend thermistor noise at ambient temps
 - [ ] Cleanup katapult installation
 - [ ] Make a scripts for mcu fw compile and katapult deploy
 - [X] moonraker [timelapse](https://github.com/mainsail-crew/moonraker-timelapse/blob/main/docs/installation.md)
